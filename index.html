@@ -1,0 +1,966 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Bitácora de Uso de IA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: banda de encabezado institucional, pestañas fijas y un cuaderno de laboratorio: formulario a la izquierda, registros numerados a la derecha. */
+:root{
+  --bg:#F5F6F9; --surface:#FFFFFF; --surface-2:#EDEAF6; --line:#E1E4EA; --ink:#1A2A4A; --ink-2:#4F5C74; --ink-3:#7A8599;
+  --accent:#8C6DD1; --accent-ink:#5E43A8; --accent-soft:#EDEAF6; --teal:#2C6072; --cyan:#00B7C3; --orange:#FF8C1A; --orange-ink:#B85A00;
+  --band:#1A2A4A; --band-ink:#FFFFFF; --band-2:#B9C4DA;
+  --ok:#1D7F55; --ok-bg:#E2F3EA; --warn:#9A6200; --warn-bg:#FCF0D8; --bad:#B8322A; --bad-bg:#FBE4E1;
+  --focus:#00B7C3;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1524; --surface:#151F33; --surface-2:#211D38; --line:#28344D; --ink:#E8ECF4; --ink-2:#AEB8CB; --ink-3:#8590A6;
+  --accent:#A68BE6; --accent-ink:#C3AEF5; --accent-soft:#261F42; --teal:#7DB7C7; --cyan:#3FD3DD; --orange:#FF9E40; --orange-ink:#FFB46B;
+  --band:#0A1120; --band-ink:#FFFFFF; --band-2:#9AA8C2;
+  --ok:#55C990; --ok-bg:#10301F; --warn:#F0B44A; --warn-bg:#33260C; --bad:#F2806F; --bad-bg:#3A1916;
+  --focus:#3FD3DD; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1524; --surface:#151F33; --surface-2:#211D38; --line:#28344D; --ink:#E8ECF4; --ink-2:#AEB8CB; --ink-3:#8590A6;
+  --accent:#A68BE6; --accent-ink:#C3AEF5; --accent-soft:#261F42; --teal:#7DB7C7; --cyan:#3FD3DD; --orange:#FF9E40; --orange-ink:#FFB46B;
+  --band:#0A1120; --band-ink:#FFFFFF; --band-2:#9AA8C2;
+  --ok:#55C990; --ok-bg:#10301F; --warn:#F0B44A; --warn-bg:#33260C; --bad:#F2806F; --bad-bg:#3A1916;
+  --focus:#3FD3DD; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+a{color:var(--accent-ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* Banda */
+.band{background:var(--band);color:var(--band-ink)}
+.band .wrap{padding-block:22px 18px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--band-2)}
+.band h1{font-size:clamp(28px,4.4vw,40px);font-weight:700;letter-spacing:-.01em;margin-top:6px}
+.band h1 span{color:var(--orange)}
+.band p{margin:6px 0 0;color:var(--band-2);max-width:60ch}
+.verified{font-family:var(--f-mono);font-size:12px;color:var(--band-2);border:1px solid #33456A;border-radius:999px;padding:5px 11px;white-space:nowrap}
+.verified b{color:var(--cyan);font-weight:500}
+.band-side{display:grid;gap:8px;justify-items:end}
+@media (max-width:640px){.band-side{justify-items:start}}
+.band-links{display:flex;flex-wrap:wrap;gap:8px}
+.blink{color:#fff;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #33456A;border-radius:999px;padding:5px 12px}
+.blink:hover{border-color:var(--cyan)}
+.blink.wa{background:var(--orange);border-color:var(--orange);color:#1A2A4A}
+.site-foot{border-top:1px solid var(--line);background:var(--surface)}
+.site-foot .wrap{padding-block:18px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--ink-2)}
+.site-foot .num{font-family:var(--f-mono);color:var(--ink);user-select:all}
+
+/* Pestañas */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--band);border-top:1px solid #26385C}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tab{appearance:none;background:none;border:0;color:var(--band-2);padding:12px 14px 11px;font-family:var(--f-display);font-weight:600;font-size:15.5px;letter-spacing:.01em;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:var(--orange)}
+.tab .count{font-family:var(--f-mono);font-size:11.5px;font-weight:500;background:#2A3C60;color:#fff;border-radius:999px;padding:1px 7px;margin-left:6px}
+
+main .wrap{padding-block:22px 64px}
+.panel[hidden]{display:none}
+
+/* Tarjetas y campos */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.card-h{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.card-h h2{font-size:19px;font-weight:600}
+.card-b{padding:16px 18px}
+.label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:5px;letter-spacing:.01em}
+.hint{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+input[type=text],input[type=date],input[type=url],input[type=number],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:14.5px;min-width:0}
+textarea{resize:vertical;min-height:64px;line-height:1.45}
+input:hover,select:hover,textarea:hover{border-color:var(--ink-3)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.grid3,.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.grid2,.grid3,.grid4{grid-template-columns:minmax(0,1fr)}}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:12px}
+fieldset+fieldset{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)}
+legend{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:10px;padding:0}
+.checks{display:grid;gap:7px}
+.check{display:flex;gap:9px;align-items:flex-start;font-size:14px;cursor:pointer}
+.check input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.radios{display:grid;gap:6px}
+.radio{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:14px}
+.radio input{margin-top:3px;accent-color:var(--accent);flex:none}
+.radio:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.radio b{font-weight:600}
+
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Proyecto */
+.project{margin-bottom:18px}
+.project .card-b{display:grid;grid-template-columns:2.2fr 1fr 1.4fr 1.1fr;gap:12px}
+@media (max-width:860px){.project .card-b{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.project .card-b{grid-template-columns:minmax(0,1fr)}}
+
+.demo{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:color-mix(in srgb,var(--orange) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--orange) 45%,var(--line));border-radius:var(--r);padding:11px 16px;margin-bottom:18px;font-size:14px}
+.demo b{color:var(--orange-ink)}
+
+.layout{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:940px){.layout{grid-template-columns:minmax(0,1fr)}}
+
+/* Semáforo */
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px 3px 7px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.verde{color:var(--ok);background:var(--ok-bg)}
+.pill.ambar{color:var(--warn);background:var(--warn-bg)}
+.pill.rojo{color:var(--bad);background:var(--bad-bg)}
+.preview{border-radius:8px;padding:11px 13px;font-size:13.5px;margin-top:16px;border:1px solid var(--line)}
+.preview.verde{background:var(--ok-bg);border-color:color-mix(in srgb,var(--ok) 30%,transparent)}
+.preview.ambar{background:var(--warn-bg);border-color:color-mix(in srgb,var(--warn) 30%,transparent)}
+.preview.rojo{background:var(--bad-bg);border-color:color-mix(in srgb,var(--bad) 30%,transparent)}
+.preview ul,.reasons{margin:7px 0 0;padding-left:18px}
+.preview li,.reasons li{margin-top:3px}
+
+/* Registros */
+.list-h{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.list-h h2{font-size:21px;font-weight:600}
+.tally{display:flex;gap:6px;flex-wrap:wrap}
+.entries{display:grid;gap:12px}
+.entry{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;border-left:4px solid var(--line)}
+.entry.verde{border-left-color:var(--ok)}
+.entry.ambar{border-left-color:var(--warn)}
+.entry.rojo{border-left-color:var(--bad)}
+.entry.off{opacity:.62}
+.entry-top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.reg{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.reg b{color:var(--accent-ink);font-weight:500}
+.tag-ej{font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--orange-ink);border:1px solid color-mix(in srgb,var(--orange) 50%,transparent);border-radius:4px;padding:1px 5px;margin-left:6px}
+.entry h3{font-size:17.5px;font-weight:600;margin-top:6px}
+.entry h3 small{font-family:var(--f-body);font-weight:400;font-size:13.5px;color:var(--ink-2)}
+.entry .purpose{margin:4px 0 0;color:var(--ink);overflow-wrap:anywhere}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;font-size:12.5px;color:var(--ink-2)}
+.meta span b{font-weight:600;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{font-size:12px;padding:2px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+.chip.miss{background:var(--warn-bg);color:var(--warn)}
+.prompt{margin-top:9px;font-family:var(--f-mono);font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink-2);max-height:7.5em;overflow:auto}
+.reasons{font-size:13px;color:var(--ink-2)}
+.entry-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.confirm{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--bad)}
+.empty{text-align:center;padding:36px 18px;color:var(--ink-2);border:1px dashed var(--line);border-radius:var(--r);background:var(--surface)}
+.empty h3{font-size:18px;color:var(--ink);margin-bottom:6px}
+
+/* Declaración */
+.std{display:flex;flex-wrap:wrap;gap:6px}
+.seg{appearance:none;border:1px solid var(--line);background:var(--surface);padding:7px 12px;border-radius:999px;font-weight:600;font-size:13.5px;cursor:pointer}
+.seg[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.decl-controls{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;margin-bottom:16px}
+.policy{font-size:13.5px;color:var(--ink-2);background:var(--surface-2);border-radius:var(--r);padding:12px 16px;margin-bottom:16px}
+.policy b{color:var(--ink)}
+.decl-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,330px);gap:20px;align-items:start}
+@media (max-width:940px){.decl-layout{grid-template-columns:minmax(0,1fr)}}
+.blocks{display:grid;gap:14px}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.block-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.where{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink)}
+.where-title{font-family:var(--f-display);font-weight:600;font-size:16px;margin-top:1px}
+.block-b{padding:14px 16px;font-size:14.5px;line-height:1.6}
+.block-b p{margin:0 0 .7em;overflow-wrap:anywhere}
+.block-b p:last-child{margin-bottom:0}
+.block-b .refs p{padding-left:2em;text-indent:-2em}
+.block-note{padding:0 16px 12px;font-size:12.5px;color:var(--ink-3)}
+.side{display:grid;gap:14px}
+.alert{border-radius:8px;padding:10px 12px;font-size:13.5px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 9px;align-items:start}
+.alert .dot{width:9px;height:9px;border-radius:50%;margin-top:6px;background:currentColor}
+.alert.rojo{background:var(--bad-bg)} .alert.rojo .dot{color:var(--bad)}
+.alert.ambar{background:var(--warn-bg)} .alert.ambar .dot{color:var(--warn)}
+.alert.info{background:var(--surface-2)} .alert.info .dot{color:var(--accent)}
+.alert small{display:block;color:var(--ink-3);font-family:var(--f-mono);font-size:11px;margin-top:2px}
+.side h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.checklist{display:grid;gap:8px;font-size:13.5px}
+.auto{display:flex;gap:9px;align-items:flex-start}
+.auto i{font-style:normal;font-family:var(--f-mono);font-size:12px;width:18px;flex:none;text-align:center;border-radius:4px;margin-top:1px}
+.auto.ok i{color:var(--ok);background:var(--ok-bg)}
+.auto.no i{color:var(--bad);background:var(--bad-bg)}
+.exempt{font-size:13px;color:var(--ink-2)}
+
+/* Guía */
+.guide{display:grid;gap:22px}
+.guide h2{font-size:22px;font-weight:600;margin-bottom:4px}
+.guide .lead{color:var(--ink-2);margin:0 0 12px;max-width:70ch}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:820px;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600;white-space:nowrap}
+.sources{columns:2 320px;font-size:13.5px;padding-left:18px;margin:0}
+.sources li{margin-bottom:5px;break-inside:avoid;overflow-wrap:anywhere}
+.footnote{font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(10,17,32,.55);z-index:20;display:grid;place-items:center;padding:16px}
+.modal-card{background:var(--surface);border-radius:12px;max-width:720px;width:100%;padding:18px;display:grid;gap:12px;max-height:90vh}
+.modal-card textarea{min-height:280px;font-family:var(--f-mono);font-size:12.5px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:9px 16px;border-radius:999px;font-size:13.5px;z-index:30;box-shadow:0 6px 24px rgba(0,0,0,.2)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:no-preference){.entry{transition:opacity .2s}}
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">IEFPI · Diplomado 025 · Uso Profesional de la Inteligencia Artificial para Investigadores Científicos</div>
+      <h1>Bitácora de Uso de <span>IA</span></h1>
+      <p>Registra cada vez que usas IA en tu investigación y genera la declaración de transparencia que pide tu revista, tu tutor o tu comité.</p>
+    </div>
+    <div class="band-side">
+      <div class="verified">Políticas verificadas: <b>octubre 2026</b></div>
+      <div class="band-links">
+        <a class="blink" href="https://www.iefpi.com.mx/" target="_blank" rel="noopener">iefpi.com.mx</a>
+        <a class="blink wa" href="https://wa.me/525531198355" target="_blank" rel="noopener">WhatsApp de asesores</a>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Secciones">
+  <div class="wrap">
+    <button class="tab" role="tab" id="t-registro" data-tab="registro" aria-selected="true">Registro<span class="count" id="countAll">0</span></button>
+    <button class="tab" role="tab" id="t-declaracion" data-tab="declaracion" aria-selected="false">Declaración</button>
+    <button class="tab" role="tab" id="t-guia" data-tab="guia" aria-selected="false">Guía de políticas</button>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+
+<!-- REGISTRO -->
+<section class="panel" id="p-registro" role="tabpanel" aria-labelledby="t-registro">
+  <div class="card project">
+    <div class="card-h"><h2>Tu proyecto</h2><span class="hint" style="margin:0">Estos datos ajustan el texto de la declaración.</span></div>
+    <div class="card-b">
+      <div><label class="label" for="pTitulo">Título del trabajo</label><input type="text" id="pTitulo" placeholder="Título del artículo, tesis o protocolo"></div>
+      <div><label class="label" for="pAutoria">Autoría</label><select id="pAutoria"><option value="varios">Varios autores</option><option value="uno">Un solo autor</option></select></div>
+      <div><label class="label" for="pRevista">Revista o destino</label><input type="text" id="pRevista" placeholder="p. ej., Revista Mexicana de Psicología"></div>
+      <div><label class="label" for="pTipo">Tipo de documento</label><select id="pTipo"><option value="articulo">Artículo</option><option value="tesis">Tesis</option><option value="protocolo">Protocolo para comité</option><option value="ponencia">Ponencia o capítulo</option></select></div>
+    </div>
+  </div>
+
+  <div class="demo" id="demoBanner" hidden>
+    <div><b>Estás viendo registros de ejemplo.</b> Muestran cómo funciona la bitácora con un estudio ficticio de rehabilitación cognitiva.</div>
+    <button class="btn small" id="clearDemo">Borrar ejemplos y empezar mi bitácora</button>
+  </div>
+
+  <div class="layout">
+    <form class="card" id="entryForm" novalidate>
+      <div class="card-h"><h2 id="formTitle">Nuevo registro</h2><span class="reg" id="formReg"></span></div>
+      <div class="card-b">
+        <fieldset>
+          <legend>Qué usaste</legend>
+          <div class="grid2">
+            <div><label class="label" for="fFecha">Fecha</label><input type="date" id="fFecha"></div>
+            <div><label class="label" for="fFase">Fase de la investigación</label>
+              <select id="fFase"></select></div>
+          </div>
+          <div class="grid3">
+            <div><label class="label" for="fHerr">Herramienta</label><input type="text" id="fHerr" placeholder="ChatGPT, Claude, Elicit…" list="toolList"></div>
+            <div><label class="label" for="fModelo">Modelo o versión</label><input type="text" id="fModelo" placeholder="GPT-5, Sonnet 4.5…"></div>
+            <div><label class="label" for="fDev">Desarrollador</label><input type="text" id="fDev" placeholder="OpenAI, Anthropic…" list="devList"></div>
+          </div>
+          <datalist id="toolList"><option value="ChatGPT"><option value="Claude"><option value="Gemini"><option value="Microsoft Copilot"><option value="Perplexity"><option value="Elicit"><option value="Consensus"><option value="SciSpace"><option value="DeepL"><option value="NotebookLM"></datalist>
+          <datalist id="devList"><option value="OpenAI"><option value="Anthropic"><option value="Google"><option value="Microsoft"><option value="Perplexity AI"><option value="Elicit"><option value="DeepL SE"></datalist>
+          <div class="grid2">
+            <div><label class="label" for="fEnlace">Enlace compartible del chat</label><input type="url" id="fEnlace" placeholder="https://…"></div>
+            <div><label class="label" for="fTituloChat">Título del chat</label><input type="text" id="fTituloChat" placeholder="Para la referencia APA"></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Para qué</legend>
+          <div><label class="label" for="fProp">Propósito</label>
+            <textarea id="fProp" rows="2" placeholder="mejorar la claridad del resumen en inglés"></textarea>
+            <div class="hint">Escríbelo como continuación de «la usé para…», en el idioma en que enviarás el trabajo.</div></div>
+          <div class="grid2">
+            <div><label class="label" for="fSeccion">Sección o producto afectado</label><input type="text" id="fSeccion" placeholder="Introducción, Figura 2, script de R…"></div>
+            <div><label class="label" for="fResultado">Qué hiciste con el resultado</label>
+              <select id="fResultado"><option value="editado">Lo edité y lo integré</option><option value="aceptado">Lo integré casi sin cambios</option><option value="descartado">Lo descarté</option></select></div>
+          </div>
+          <div>
+            <span class="label">Grado de contribución de la IA</span>
+            <div class="radios" id="fContrib"></div>
+          </div>
+          <div><label class="label" for="fPrompt">Prompt principal</label><textarea id="fPrompt" rows="3" placeholder="Pega aquí el prompt que usaste (o el más representativo)"></textarea></div>
+          <div class="grid2">
+            <div><label class="label" for="fIter">Iteraciones del prompt</label><input type="number" id="fIter" min="0" step="1" placeholder="0"></div>
+            <div style="align-self:end"><label class="check"><input type="checkbox" id="fRefsIA"> La IA me sugirió referencias bibliográficas</label></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Datos y cuenta</legend>
+          <div class="grid2">
+            <div><label class="label" for="fDatos">Qué información le diste</label><select id="fDatos"></select></div>
+            <div><label class="label" for="fCuenta">Tipo de cuenta o instalación</label><select id="fCuenta"></select></div>
+          </div>
+          <div id="imgWrap" hidden><label class="label" for="fImagen">Tipo de imagen o figura</label><select id="fImagen"></select></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Cómo lo verificaste</legend>
+          <div class="checks" id="fVerif"></div>
+        </fieldset>
+
+        <div class="preview verde" id="riskPreview" aria-live="polite"></div>
+
+        <div class="btn-row" style="margin-top:16px">
+          <button type="submit" class="btn primary" id="saveBtn">Guardar registro</button>
+          <button type="button" class="btn ghost" id="cancelEdit" hidden>Cancelar edición</button>
+        </div>
+      </div>
+    </form>
+
+    <div>
+      <div class="list-h">
+        <div><h2>Registros</h2><div class="tally" id="tally" style="margin-top:6px"></div></div>
+        <div class="btn-row">
+          <button class="btn small" id="exportMd">Exportar anexo (.md)</button>
+          <button class="btn small" id="exportJson">Respaldo (.json)</button>
+          <label class="btn small" for="importFile">Importar respaldo</label>
+          <input type="file" id="importFile" accept=".json,application/json" class="sr">
+        </div>
+      </div>
+      <div class="entries" id="entries"></div>
+      <p class="hint" style="margin-top:14px">Tu bitácora se guarda en este navegador. Descarga un respaldo de vez en cuando, sobre todo si cambias de computadora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DECLARACIÓN -->
+<section class="panel" id="p-declaracion" role="tabpanel" aria-labelledby="t-declaracion" hidden>
+  <div class="decl-controls">
+    <div>
+      <span class="label">Estándar o editorial</span>
+      <div class="std" id="stdPicker"></div>
+    </div>
+    <div>
+      <span class="label">Idioma de la declaración</span>
+      <div class="std" id="langPicker">
+        <button class="seg" data-lang="es" aria-pressed="true">Español</button>
+        <button class="seg" data-lang="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+  </div>
+  <div class="policy" id="policyNote"></div>
+  <div class="decl-layout">
+    <div class="blocks" id="blocks"></div>
+    <aside class="side">
+      <div class="card"><div class="card-b"><h3>Alertas</h3><div style="display:grid;gap:8px" id="alerts"></div></div></div>
+      <div class="card"><div class="card-b"><h3>Antes de enviar</h3><div class="checklist" id="checklist"></div></div></div>
+      <div class="card" id="exemptCard" hidden><div class="card-b"><h3>No requieren declaración</h3><div class="exempt" id="exempt"></div></div></div>
+    </aside>
+  </div>
+</section>
+
+<!-- GUÍA -->
+<section class="panel" id="p-guia" role="tabpanel" aria-labelledby="t-guia" hidden>
+  <div class="guide">
+    <div>
+      <h2>Lo que piden hoy las políticas</h2>
+      <p class="lead">Todas coinciden en que la IA no puede ser autora y en que el uso sustantivo se declara nombrando herramienta y propósito. Cambian el lugar de la declaración, lo que queda exento y lo que se permite con imágenes y en la revisión por pares.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Estándar</th><th>Versión vigente</th><th>Dónde se declara</th><th>Qué queda exento</th><th>Prohibido o restringido</th></tr></thead>
+        <tbody id="policyTable"></tbody>
+      </table></div>
+    </div>
+    <div>
+      <h2>Riesgo por fase de la investigación</h2>
+      <p class="lead">El semáforo de cada registro se calcula con estas reglas. Es una interpretación de las políticas para orientarte, no un requisito literal de ninguna organización.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Fase</th><th>Riesgo</th><th>Qué cuidar</th></tr></thead>
+        <tbody id="phaseTable"></tbody>
+      </table></div>
+    </div>
+    <div>
+      <h2>Fuentes oficiales</h2>
+      <ul class="sources" id="sources"></ul>
+    </div>
+    <p class="footnote">La política de la revista o institución a la que envías prevalece siempre sobre estas guías generales: revisa sus instrucciones para autores. Las políticas se verificaron en octubre de 2026; en Wiley, Taylor &amp; Francis y SciELO conviene confirmar el texto en la página oficial. Material del Diplomado 025, IEFPI.</p>
+  </div>
+</section>
+
+</div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <div>Material del Diplomado 025 · <a href="https://www.iefpi.com.mx/" target="_blank" rel="noopener">Instituto en Educación y Formación Profesional Integral (IEFPI)</a></div>
+    <div>¿Dudas sobre el diplomado? Escribe a nuestros asesores educativos: <a href="https://wa.me/525531198355" target="_blank" rel="noopener">WhatsApp</a> <span class="num">+52 55 3119 8355</span></div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <h3 id="modalTitle" style="font-size:18px">Copia este contenido</h3>
+    <p class="hint" id="modalHint" style="margin:0">La descarga no está disponible en esta vista. Copia el texto y guárdalo en un archivo.</p>
+    <textarea id="modalText" readonly></textarea>
+    <div class="btn-row"><button class="btn primary" id="modalCopy">Copiar</button><button class="btn" id="modalClose">Cerrar</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(function(){
+"use strict";
+const KEY='bitacora-ia-025-v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const I1='\u0001',I2='\u0002'; // marcas de cursiva
+
+/* ---------- Catálogos ---------- */
+const FASES={
+  busqueda:{lbl:'Búsqueda de literatura',es:'la búsqueda y organización de literatura',en:'literature search and organization',g:'inv'},
+  diseno:{lbl:'Diseño del estudio',es:'el diseño del estudio',en:'study design',g:'inv'},
+  analisis:{lbl:'Análisis de datos',es:'el análisis de datos',en:'data analysis',g:'inv'},
+  codigo:{lbl:'Código de análisis',es:'la escritura y depuración de código',en:'writing and debugging code',g:'inv'},
+  redaccion:{lbl:'Redacción',es:'la redacción del manuscrito',en:'drafting the manuscript',g:'esc'},
+  edicion:{lbl:'Edición de lenguaje',es:'la corrección y edición del lenguaje',en:'language editing',g:'esc'},
+  traduccion:{lbl:'Traducción',es:'la traducción del texto',en:'translating the text',g:'esc'},
+  figuras:{lbl:'Figuras e imágenes',es:'la elaboración de figuras',en:'creating figures',g:'fig'},
+  revision:{lbl:'Revisión por pares (como revisor)',es:'la preparación del informe de revisión',en:'preparing the peer-review report',g:'rev'}
+};
+const CONTRIB={
+  superficial:{lbl:'Superficial',d:'Ortografía, gramática, formato o búsqueda básica de fuentes.',es:'apoyo superficial',en:'minor assistance'},
+  asistida:{lbl:'Asistida',d:'Sugerencias o reescrituras que revisé y edité.',es:'asistencia revisada y editada por la autoría',en:'assistance reviewed and edited by the authors'},
+  sustancial:{lbl:'Sustancial',d:'Produjo parte del contenido, análisis o código a partir de mis insumos.',es:'contribución sustancial a partir de insumos de la autoría',en:'substantial contribution based on author-provided inputs'},
+  autonoma:{lbl:'Autónoma',d:'Generó contenido, datos o interpretaciones sin insumos míos.',es:'contenido generado sin insumos de la autoría',en:'content generated without author inputs'}
+};
+const DATOS={
+  ninguno:'Nada sensible: instrucciones o texto ya público',
+  inedito:'Texto o datos propios inéditos, sin datos personales',
+  anonimizados:'Datos de participantes anonimizados',
+  identificables:'Datos identificables de participantes o pacientes',
+  ajeno:'Un manuscrito ajeno que estoy revisando'
+};
+const CUENTA={
+  publica:'Cuenta gratuita o personal',
+  institucional:'Cuenta institucional o de pago sin entrenamiento con mis datos',
+  local:'Modelo instalado localmente'
+};
+const IMAGEN={
+  diagrama:'Diagrama explicativo (flujo, esquema, línea de tiempo)',
+  visualizacion:'Gráfica generada a partir de mis datos',
+  primaria:'Imagen primaria (microscopía, radiología, fotos de pacientes, geles)',
+  resumen:'Resumen gráfico o portada',
+  fotorrealista:'Imagen fotorrealista o ilustración sin datos de origen'
+};
+const VERIF={
+  refs:{lbl:'Comprobé cada referencia en su fuente original',es1:'verifiqué cada referencia contra su fuente original',esN:'verificamos cada referencia contra su fuente original',en1:'checked every reference against its original source',enN:'checked every reference against its original source'},
+  datos:{lbl:'Recalculé los datos o resultados',es1:'recalculé los resultados',esN:'recalculamos los resultados',en1:'recalculated the results',enN:'recalculated the results'},
+  codigo:{lbl:'Probé y revisé el código',es1:'probé y revisé el código',esN:'probamos y revisamos el código',en1:'tested and reviewed the code',enN:'tested and reviewed the code'},
+  coautor:{lbl:'Lo revisó un coautor, tutor o colega',es1:'una segunda persona revisó el resultado',esN:'un coautor o tutor revisó el resultado',en1:'had the output reviewed by a supervisor or colleague',enN:'had the output reviewed by a co-author or supervisor'},
+  reescrito:{lbl:'Reescribí el texto con mis palabras',es1:'reescribí el texto con mis propias palabras',esN:'reescribimos el texto con nuestras propias palabras',en1:'rewrote the text in my own words',enN:'rewrote the text in our own words'}
+};
+const STD={
+  apa:{lbl:'APA 7',name:'APA Journals y Estilo APA 7.ª ed.',ver:'Política de APA Journals actualizada en agosto de 2025; formato de cita de IA del 9 de septiembre de 2025.',url:'https://www.apa.org/pubs/journals/resources/publishing-tips/policy-generative-ai',sum:'El uso se declara en la sección más pertinente (casi siempre Introducción o Método) y se cita la herramienta. La traducción o corrección extensa va en la nota de autor y las figuras en su nota. Ya no se exige el número de versión en la referencia.'},
+  icmje:{lbl:'ICMJE / COPE',name:'ICMJE (Sección V) y COPE',ver:'Recomendaciones ICMJE de enero de 2026; posición de COPE de febrero de 2023.',url:'https://www.icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-authors.html',sum:'Se declara en la carta de presentación y en el manuscrito: Agradecimientos para la redacción, Métodos para datos, análisis y figuras. Si la IA formó parte del método, se describen herramienta, versión y prompts para que el enfoque pueda replicarse. No se puede citar material generado por IA como fuente primaria.'},
+  elsevier:{lbl:'Elsevier',name:'Elsevier',ver:'Política actualizada en junio de 2026 (nuevo título de sección).',url:'https://www.elsevier.com/about/policies-and-standards/generative-ai-policies-for-journals',sum:'Sección propia antes de las referencias con la plantilla oficial. El uso como parte de la investigación se describe en Métodos con modelo, versión y desarrollador. La corrección básica de gramática y ortografía está exenta.'},
+  springer:{lbl:'Springer Nature',name:'Springer Nature / Nature Portfolio',ver:'Marco de riesgo verde, ámbar y rojo (2026, sin fecha exacta de versión).',url:'https://www.springernature.com/gp/policies/editorial-policies/ai-manuscript-preparation',sum:'«AI Declaration» con sistema, propósito y grado de contribución, más la leyenda de cada figura. Algunas revistas del grupo aún muestran la política anterior: revisa sus instrucciones.'},
+  wiley:{lbl:'Wiley',name:'Wiley',ver:'Guías publicadas el 28 de octubre de 2025.',url:'https://www.wiley.com/en-us/publish/article/ai-guidelines/',sum:'Agradecimientos para redacción, edición, traducción o formato; Métodos para metodología, análisis o revisión de literatura; pies de figura para contenido visual. También se declara en el formulario de envío.'},
+  scielo:{lbl:'SciELO / LatAm',name:'Red SciELO',ver:'Guía del 14 de septiembre de 2023 (sin actualización localizada).',url:'https://www.scielo.org/es/sobre-el-scielo/metodologias-y-tecnologias/guia-de-uso-de-herramientas-y-recursos-de-inteligencia-artificial-en-la-comunicacion-de-investigaciones-en-la-red-scielo/',sum:'Todo uso se registra y se declara, normalmente en Métodos o sección equivalente, siguiendo la línea de COPE. Ocultar el uso de IA en la revisión por pares se considera una falta ética.'}
+};
+
+/* ---------- Estado ---------- */
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function blankVerif(){return{refs:false,datos:false,codigo:false,coautor:false,reescrito:false}}
+function sample(){
+  const V=o=>Object.assign(blankVerif(),o);
+  return {
+    proyecto:{titulo:'Efecto de la rehabilitación cognitiva computarizada en adultos mayores con deterioro cognitivo leve',autoria:'varios',revista:'',tipo:'articulo'},
+    registros:[
+      {id:'e1',n:1,fecha:'2026-10-03',fase:'busqueda',herramienta:'Elicit',modelo:'',desarrollador:'Elicit',enlace:'',tituloChat:'',proposito:'identificar ensayos controlados sobre rehabilitación cognitiva computarizada publicados entre 2015 y 2025',seccion:'Introducción',resultado:'editado',contribucion:'asistida',prompt:'Ensayos controlados aleatorizados de entrenamiento cognitivo computarizado en adultos ≥ 60 años con deterioro cognitivo leve; desenlaces: memoria y funciones ejecutivas.',iteraciones:3,refsIA:true,datos:'ninguno',cuenta:'publica',imagen:'diagrama',verif:V({refs:true}),incluir:true,ejemplo:true},
+      {id:'e2',n:2,fecha:'2026-10-09',fase:'codigo',herramienta:'Claude',modelo:'Claude Sonnet 4.5',desarrollador:'Anthropic',enlace:'',tituloChat:'',proposito:'depurar el script de R del modelo lineal mixto de medidas repetidas',seccion:'Script de análisis en R',resultado:'editado',contribucion:'asistida',prompt:'Este modelo lmer no converge con el término aleatorio (1 + sesion | id). Explica por qué y propone alternativas.',iteraciones:2,refsIA:false,datos:'anonimizados',cuenta:'institucional',imagen:'diagrama',verif:V({codigo:true,datos:true}),incluir:true,ejemplo:true},
+      {id:'e3',n:3,fecha:'2026-10-12',fase:'analisis',herramienta:'ChatGPT',modelo:'GPT-5',desarrollador:'OpenAI',enlace:'',tituloChat:'',proposito:'codificar temas en las transcripciones de entrevistas a cuidadores',seccion:'Resultados cualitativos',resultado:'editado',contribucion:'sustancial',prompt:'Identifica temas recurrentes en estas transcripciones y asigna un código a cada fragmento.',iteraciones:1,refsIA:false,datos:'identificables',cuenta:'publica',imagen:'diagrama',verif:V({coautor:true}),incluir:true,ejemplo:true},
+      {id:'e4',n:4,fecha:'2026-10-18',fase:'figuras',herramienta:'ChatGPT',modelo:'GPT-5',desarrollador:'OpenAI',enlace:'',tituloChat:'',proposito:'elaborar el diagrama de flujo de participantes a partir de nuestros conteos de reclutamiento',seccion:'Figura 1',resultado:'editado',contribucion:'asistida',prompt:'',iteraciones:0,refsIA:false,datos:'inedito',cuenta:'institucional',imagen:'diagrama',verif:V({datos:true}),incluir:true,ejemplo:true},
+      {id:'e5',n:5,fecha:'2026-10-21',fase:'edicion',herramienta:'ChatGPT',modelo:'GPT-5',desarrollador:'OpenAI',enlace:'',tituloChat:'',proposito:'corregir la gramática y ortografía del resumen en inglés',seccion:'Abstract',resultado:'aceptado',contribucion:'superficial',prompt:'',iteraciones:0,refsIA:false,datos:'inedito',cuenta:'institucional',imagen:'diagrama',verif:V({reescrito:false,coautor:true}),incluir:true,ejemplo:true}
+    ],
+    checks:{autoria:false,instrucciones:false,carta:false,conserva:false},
+    ajustes:{std:'apa',lang:'es'}
+  };
+}
+let state;
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(s&&Array.isArray(s.registros))return normalize(s)}}catch(e){}
+  return sample();
+}
+function normalize(s){
+  const base=sample();
+  s.proyecto=Object.assign({},base.proyecto,{titulo:'',revista:''},s.proyecto||{});
+  s.checks=Object.assign({},base.checks,s.checks||{});
+  s.ajustes=Object.assign({},base.ajustes,s.ajustes||{});
+  s.registros=(s.registros||[]).map(r=>Object.assign({fecha:today(),fase:'redaccion',herramienta:'',modelo:'',desarrollador:'',enlace:'',tituloChat:'',proposito:'',seccion:'',resultado:'editado',contribucion:'asistida',prompt:'',iteraciones:0,refsIA:false,datos:'ninguno',cuenta:'publica',imagen:'diagrama',incluir:true,ejemplo:false},r,{verif:Object.assign(blankVerif(),r.verif||{})}));
+  return s;
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+state=load();
+
+/* ---------- Riesgo ---------- */
+function risk(e){
+  const rojo=[],ambar=[];
+  const anyVerif=Object.values(e.verif).some(Boolean);
+  if(e.fase==='figuras'&&(e.imagen==='primaria'||e.imagen==='fotorrealista'))
+    rojo.push(e.imagen==='primaria'?'Generar o alterar imágenes primarias con IA está prohibido en Elsevier, Springer Nature, Wiley y Taylor & Francis, incluso para ajustar brillo o contraste.':'Springer Nature prohíbe imágenes fotorrealistas o contenido visual sin insumos verificables.');
+  if(e.datos==='identificables'&&e.cuenta==='publica')rojo.push('Introdujiste datos identificables en una cuenta gratuita o personal. APA y Elsevier piden no hacerlo; avisa a tu comité de ética y usa datos anonimizados o una cuenta institucional.');
+  if(e.datos==='ajeno'){
+    if(e.cuenta==='publica')rojo.push('Subiste un manuscrito en revisión a una herramienta sin confidencialidad garantizada. Todas las políticas lo prohíben.');
+    else ambar.push('Subir un manuscrito ajeno exige permiso de la revista (ICMJE) y Elsevier no lo permite en ningún caso.');
+  }
+  if(e.refsIA&&!e.verif.refs)rojo.push('La IA sugirió referencias y no registraste que las comprobaste. Las referencias generadas por IA pueden ser incorrectas o inventadas.');
+  if(e.contribucion==='autonoma'&&!['edicion','traduccion','busqueda'].includes(e.fase))rojo.push('Springer Nature clasifica como prohibido generar afirmaciones, interpretaciones o datos con IA sin insumos de la autoría.');
+  if(e.fase==='revision'&&(e.contribucion==='sustancial'||e.contribucion==='autonoma'))rojo.push('Delegar el juicio de la revisión en la IA no está permitido (Springer Nature); solo se admite apoyo para redactar el informe.');
+  if(e.datos==='identificables'&&e.cuenta==='institucional')ambar.push('Datos identificables: confirma en los términos de la cuenta que no se retienen ni se usan para entrenar el modelo.');
+  if(e.datos==='anonimizados'&&e.cuenta==='publica')ambar.push('Datos de participantes en una cuenta personal: aunque estén anonimizados, revisa los términos de uso y lo aprobado por tu comité.');
+  if(e.datos==='inedito'&&e.cuenta==='publica')ambar.push('Texto inédito en una cuenta personal: Elsevier y Wiley piden asegurarte de que la herramienta no adquiera derechos sobre tu material ni lo use para entrenar.');
+  if(e.resultado!=='descartado'&&!anyVerif)ambar.push('Falta registrar cómo verificaste el resultado.');
+  if(['analisis','codigo','diseno'].includes(e.fase))ambar.push('Uso metodológico: descríbelo en Métodos con herramienta, versión y prompts para que pueda replicarse (ICMJE 2026).');
+  if(e.fase==='figuras'&&e.imagen==='resumen')ambar.push('Elsevier no permite resúmenes gráficos hechos con herramientas genéricas de IA y las portadas requieren permiso previo.');
+  if(e.fase==='figuras'&&(e.imagen==='diagrama'||e.imagen==='visualizacion'))ambar.push('Declara el uso en el pie o nota de la figura, además de la declaración general.');
+  if(e.fase==='busqueda'&&e.contribucion!=='superficial')ambar.push('Búsqueda, cribado o síntesis con IA que entra al manuscrito: Wiley pide declararla en Métodos.');
+  if(e.contribucion==='sustancial'&&['redaccion','edicion','traduccion'].includes(e.fase))ambar.push('Redacción sustancial con IA: Springer Nature la marca en ámbar y debe quedar identificada.');
+  if(!e.prompt.trim()&&['analisis','codigo','diseno','busqueda'].includes(e.fase))ambar.push('Guarda el prompt: ICMJE pide prompts cuando la IA forma parte del método.');
+  const nivel=rojo.length?'rojo':ambar.length?'ambar':'verde';
+  return{nivel,rojo,ambar,motivos:rojo.concat(ambar)};
+}
+const NIVEL={verde:'Bajo',ambar:'Precaución',rojo:'Alto'};
+
+/* ---------- Utilidades de texto ---------- */
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function parseD(s){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?{y:+m[1],m:+m[2]-1,d:+m[3]}:null}
+function fLong(s,lang){const p=parseD(s);if(!p)return lang==='en'?'[date]':'[fecha]';return lang==='en'?`${MONTHS[p.m]} ${p.d}, ${p.y}`:`${p.d} de ${MESES[p.m]} de ${p.y}`}
+function fShort(s){const p=parseD(s);return p?`${p.d} ${MESES[p.m].slice(0,3)} ${p.y}`:'sin fecha'}
+function year(s){const p=parseD(s);return p?p.y:'s. f.'}
+function join(arr,lang){arr=arr.filter(Boolean);if(arr.length<2)return arr[0]||'';const last=arr[arr.length-1];return arr.slice(0,-1).join(', ')+(lang==='en'?(arr.length>2?', and ':' and '):' y ')+last}
+function joinSemi(arr,lang){if(arr.length<2)return arr[0]||'';return arr.slice(0,-1).join('; ')+(lang==='en'?'; and ':'; y ')+arr[arr.length-1]}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s}
+function clean(s){return String(s||'').trim().replace(/[.;\s]+$/,'')}
+function reg(n){return 'REG-'+String(n).padStart(3,'0')}
+function tool(e,lang){
+  const h=e.herramienta.trim()||(lang==='en'?'[tool]':'[herramienta]');
+  const x=[];if(e.modelo.trim()&&e.modelo.trim()!==h)x.push(e.modelo.trim());if(e.desarrollador.trim()&&e.desarrollador.trim()!==h)x.push(e.desarrollador.trim());
+  return x.length?`${h} (${x.join(', ')})`:h;
+}
+function purpose(e,lang){
+  let p=clean(e.proposito);
+  if(lang==='en')p=p.replace(/^(to|in order to)\s+/i,'');else p=p.replace(/^(para|con el fin de)\s+/i,'');
+  return p||(lang==='en'?'assist with '+FASES[e.fase].en:'apoyar '+FASES[e.fase].es);
+}
+function cite(e){return `${(e.desarrollador.trim()||e.herramienta.trim()||'Desarrollador')}, ${year(e.fecha)}`}
+function verifSentence(list,lang,uno){
+  const keys=Object.keys(VERIF).filter(k=>list.some(e=>e.verif[k]));
+  if(!keys.length)return '';
+  const k=lang==='en'?(uno?'en1':'enN'):(uno?'es1':'esN');
+  const parts=keys.map(x=>VERIF[x][k]);
+  if(lang==='en')return (uno?'I ':'We ')+join(parts,'en')+'.';
+  return cap(join(parts,'es'))+'.';
+}
+function respES(uno){return uno?'Asumo plena responsabilidad por el contenido.':'Asumimos plena responsabilidad por el contenido.'}
+function respEN(uno){return uno?'I take full responsibility for the content.':'We take full responsibility for the content.'}
+function promptNote(list,lang,where){
+  if(!list.some(e=>e.prompt.trim()))return '';
+  return lang==='en'?`The prompts used are provided in ${where||'the Appendix'}.`:`Los prompts utilizados se incluyen en ${where||'el Apéndice'}.`;
+}
+function iterBit(e,lang){const n=+e.iteraciones||0;if(n<2)return '';return lang==='en'?`, refining the prompt over ${n} iterations`:`; el prompt se refinó en ${n} iteraciones`}
+function methodSentence(e,lang,uno,passive){
+  if(lang==='en'){
+    if(passive)return `${tool(e,'en')} was used on ${fLong(e.fecha,'en')} to ${purpose(e,'en')}${iterBit(e,'en')}.`;
+    return `${uno?'I':'We'} used ${tool(e,'en')} on ${fLong(e.fecha,'en')} to ${purpose(e,'en')}${iterBit(e,'en')}.`;
+  }
+  if(passive)return `Se utilizó ${tool(e,'es')} el ${fLong(e.fecha,'es')} para ${purpose(e,'es')}${iterBit(e,'es')}.`;
+  return `${uno?'Utilicé':'Utilizamos'} ${tool(e,'es')} el ${fLong(e.fecha,'es')} para ${purpose(e,'es')}${iterBit(e,'es')}.`;
+}
+function useSentence(e,lang,uno){
+  return lang==='en'?`${uno?'I':'We'} used ${tool(e,'en')} to ${purpose(e,'en')}.`:`${uno?'Utilicé':'Utilizamos'} ${tool(e,'es')} para ${purpose(e,'es')}.`;
+}
+function figSentence(e,lang){
+  const lab=e.seccion.trim();
+  if(lang==='en')return `${lab?lab+'. ':''}Created with the assistance of ${tool(e,'en')} to ${purpose(e,'en')}; the content was checked against the source data and reviewed by the authors.`;
+  return `${lab?lab+'. ':''}Elaborada con ayuda de ${tool(e,'es')} para ${purpose(e,'es')}; el contenido se cotejó con los datos de origen y fue revisado por la autoría.`;
+}
+
+/* ---------- Generadores por estándar ---------- */
+function exemptFn(std){
+  if(std==='apa')return e=>e.fase==='busqueda'&&e.contribucion==='superficial';
+  if(std==='elsevier')return e=>e.fase==='edicion'&&e.contribucion==='superficial';
+  if(std==='wiley')return e=>(e.fase==='edicion'||e.fase==='busqueda')&&e.contribucion==='superficial';
+  return ()=>false;
+}
+function generate(){
+  const {std,lang}=state.ajustes; const uno=state.proyecto.autoria==='uno'; const en=lang==='en';
+  const used=state.registros.filter(e=>e.incluir&&e.resultado!=='descartado').sort((a,b)=>a.n-b.n);
+  const ex=exemptFn(std);
+  const exempt=used.filter(ex);
+  const all=used.filter(e=>!ex(e));
+  const rev=all.filter(e=>e.fase==='revision');
+  const L=all.filter(e=>e.fase!=='revision');
+  const esc_=L.filter(e=>FASES[e.fase].g==='esc');
+  const inv=L.filter(e=>FASES[e.fase].g==='inv');
+  const fig=L.filter(e=>FASES[e.fase].g==='fig');
+  const blocks=[];
+  const B=(where,title,paras,note,cls)=>{if(paras.filter(Boolean).length)blocks.push({where,title,paras:paras.filter(Boolean),note,cls})};
+
+  if(std==='apa'){
+    const intro=L.filter(e=>e.fase==='busqueda'||e.fase==='redaccion');
+    const met=inv.filter(e=>e.fase!=='busqueda');
+    const nota=esc_.filter(e=>e.fase==='edicion'||e.fase==='traduccion');
+    const apaUse=(e,iter)=>{
+      const m=e.modelo.trim()&&e.modelo.trim()!==e.herramienta.trim()?` (${e.modelo.trim()})`:'';
+      const h=e.herramienta.trim()||(en?'[tool]':'[herramienta]');
+      return en?`${uno?'I':'We'} used ${h}${m} (${cite(e)}) to ${purpose(e,'en')}${iter?iterBit(e,'en'):''}.`:`${uno?'Utilicé':'Utilizamos'} ${h}${m} (${cite(e)}) para ${purpose(e,'es')}${iter?iterBit(e,'es'):''}.`;
+    };
+    if(intro.length)B('Introducción o sección donde se usó',en?'Introduction':'Introducción',[intro.map(e=>apaUse(e)).join(' ')+' '+verifSentence(intro,lang,uno),promptNote(intro,lang,en?'Appendix A':'el Apéndice A')],'Si el uso de redacción afectó otra sección (p. ej., Discusión), coloca la frase ahí.');
+    if(met.length)B('Método','Método / Method',[met.map(e=>apaUse(e,true)).join(' ')+' '+verifSentence(met,lang,uno),promptNote(met,lang,en?'Appendix A':'el Apéndice A')],'APA pide indicar las iteraciones cuando la IA genera código o analiza datos y conservar el resultado.');
+    if(nota.length)B('Nota de autor',en?'Author note':'Nota de autor',[nota.map(e=>apaUse(e)).join(' ')+' '+verifSentence(nota,lang,uno)],'APA ubica aquí la traducción o la corrección que va más allá de lo que haría un procesador de texto.');
+    fig.forEach(e=>{
+      const h=e.herramienta.trim()||(en?'[tool]':'[herramienta]');const m=e.modelo.trim()&&e.modelo.trim()!==h?` (${e.modelo.trim()})`:'';
+      const t=en?`${I1}Note.${I2} Created with the assistance of ${h}${m} (${cite(e)}) to ${purpose(e,'en')}; the content was checked against the source data.`:`${I1}Nota.${I2} Elaborada con ayuda de ${h}${m} (${cite(e)}) para ${purpose(e,'es')}; el contenido se cotejó con los datos de origen.`;
+      B('Nota de la figura',e.seccion.trim()||(en?'Figure':'Figura'),[t],'APA pide incluir aquí los prompts si ayudan al lector.');
+    });
+    // Referencias
+    const seen=new Set(),refs=[];
+    L.concat(rev).forEach(e=>{
+      const dev=e.desarrollador.trim()||e.herramienta.trim()||'Desarrollador';
+      const name=e.modelo.trim()||e.herramienta.trim()||'Herramienta';
+      let r;
+      if(e.enlace.trim()&&e.tituloChat.trim()){
+        const p=parseD(e.fecha);const dt=p?(en?`${p.y}, ${MONTHS[p.m]} ${p.d}`:`${p.y}, ${p.d} de ${MESES[p.m]}`):'s. f.';
+        r=`${dev}. (${dt}). ${I1}${e.tituloChat.trim()}${I2} [${en?'Generative AI chat':'Chat de IA generativa'}]. ${name}. ${e.enlace.trim()}`;
+      }else{
+        r=`${dev}. (${year(e.fecha)}). ${I1}${name}${I2} [${en?'Large language model':'Modelo de lenguaje extenso'}]. ${e.enlace.trim()||(en?'[URL of the tool]':'[URL de la herramienta]')}`;
+      }
+      if(!seen.has(r)){seen.add(r);refs.push(r)}
+    });
+    if(refs.length)B('Lista de referencias',en?'References':'Referencias',refs,'Formato APA de septiembre de 2025: nombre del modelo en lugar de número de versión. Usa el formato de chat cuando tengas enlace compartible y título.','refs');
+  }
+
+  if(std==='icmje'){
+    if(L.length){
+      const items=L.map(e=>en?`${tool(e,'en')} to ${purpose(e,'en')}`:`${tool(e,'es')} para ${purpose(e,'es')}`);
+      const secs=[];if(esc_.length)secs.push(en?'Acknowledgments':'Agradecimientos');if(inv.length||fig.length)secs.push(en?'Methods':'Métodos');
+      const t=en?`In accordance with the ICMJE Recommendations, we disclose the use of AI-assisted technologies in this work: ${joinSemi(items,'en')}. These uses are described in the ${join(secs,'en')} section${secs.length>1?'s':''} of the manuscript. No AI tool is listed as an author or cited as a primary source, and the authors take responsibility for the accuracy, integrity, and originality of the work.`
+        :`De acuerdo con las Recomendaciones del ICMJE, declaramos el uso de tecnologías asistidas por IA en este trabajo: ${joinSemi(items,'es')}. Estos usos se describen en ${secs.length>1?'las secciones':'la sección'} de ${join(secs,'es')} del manuscrito. Ninguna herramienta de IA figura como autora ni se cita como fuente primaria, y asumimos la responsabilidad por la exactitud, integridad y originalidad del trabajo.`;
+      B('Carta de presentación',en?'Cover letter':'Carta de presentación',[uno?t.replace('we disclose','I disclose').replace('the authors take','I take').replace('declaramos','declaro').replace('asumimos','asumo'):t],'ICMJE pide la declaración tanto en la carta como en el manuscrito.');
+    }
+    if(esc_.length)B('Agradecimientos',en?'Acknowledgments':'Agradecimientos',[esc_.map(e=>useSentence(e,lang,uno)).join(' ')+' '+verifSentence(esc_,lang,uno)+' '+(en?respEN(uno):respES(uno))]);
+    const m=inv.concat(fig);
+    if(m.length)B('Métodos',en?'Methods':'Métodos',[m.map(e=>methodSentence(e,lang,uno)).join(' ')+' '+verifSentence(m,lang,uno),promptNote(m,lang,en?'the Supplementary Material':'el material suplementario')],'Desde enero de 2026 ICMJE pide detalle suficiente para replicar: herramienta, versión y prompts cuando corresponda.');
+  }
+
+  if(std==='elsevier'){
+    const d=esc_.concat(fig);
+    if(d.length){
+      const s=uno?'':'s';
+      const items=d.map(e=>en?`${tool(e,'en')} in order to ${purpose(e,'en')}`:`${tool(e,'es')} con el fin de ${purpose(e,'es')}`);
+      const many=d.length>1;
+      const t=en?`During the preparation of this work, the author${s} used ${joinSemi(items,'en')}. After using ${many?'these tools/services':'this tool/service'}, the author${s} reviewed and edited the content as needed and take${uno?'s':''} full responsibility for the content of the published article.`
+        :`Durante la preparación de este trabajo, ${uno?'utilicé':'utilizamos'} ${joinSemi(items,'es')}. Tras usar ${many?'estas herramientas o servicios':'esta herramienta o servicio'}, ${uno?'revisé y edité':'revisamos y editamos'} el contenido según fue necesario y ${uno?'asumo':'asumimos'} plena responsabilidad por el contenido del artículo publicado.`;
+      B('Sección propia, justo antes de las referencias',en?'Declaration of generative AI and AI-assisted technologies in the manuscript preparation process':'Declaración sobre IA generativa y tecnologías asistidas por IA en el proceso de preparación del manuscrito',[t],en?'Official Elsevier template (title updated in June 2026).':'Traducción de la plantilla oficial. Las revistas de Elsevier en inglés usan el título y el texto en inglés.');
+    }
+    if(inv.length)B('Métodos',en?'Methods':'Métodos',[inv.map(e=>methodSentence(e,lang,uno)).join(' ')+' '+verifSentence(inv,lang,uno),promptNote(inv,lang,en?'the Supplementary Material':'el material suplementario')],'Elsevier pide describir de forma reproducible el uso que forma parte de la investigación: modelo, versión y desarrollador.');
+    fig.forEach(e=>B('Pie de la figura',e.seccion.trim()||(en?'Figure':'Figura'),[figSentence(e,lang)],'Solo para imágenes explicativas o gráficas derivadas de datos con un método descrito.'));
+  }
+
+  if(std==='springer'){
+    if(L.length){
+      const t=L.map(e=>{const c=CONTRIB[e.contribucion];return en?`${uno?'I':'We'} used ${tool(e,'en')} to ${purpose(e,'en')} (degree of contribution: ${c.en}).`:`${uno?'Utilicé':'Utilizamos'} ${tool(e,'es')} para ${purpose(e,'es')} (grado de contribución: ${c.es}).`}).join(' ');
+      const close=en?`All AI-assisted content is identified, and ${uno?'I take':'the authors take'} full responsibility for the manuscript, including the AI-assisted parts.`:`Todo el contenido asistido por IA está identificado y ${uno?'asumo':'asumimos'} plena responsabilidad por el manuscrito, incluidas las partes asistidas por IA.`;
+      B('Sección «AI Declaration» del manuscrito','AI Declaration',[t+' '+verifSentence(L,lang,uno)+' '+close]);
+    }
+    if(inv.length)B('Métodos',en?'Methods':'Métodos',[inv.map(e=>methodSentence(e,lang,uno)).join(' ')+' '+verifSentence(inv,lang,uno),promptNote(inv,lang,en?'the Supplementary Information':'la información suplementaria')]);
+    fig.forEach(e=>B('Leyenda de la figura',e.seccion.trim()||(en?'Figure':'Figura'),[figSentence(e,lang)],'Springer Nature solo admite contenido visual derivado de datos, métodos o código verificables.'));
+  }
+
+  if(std==='wiley'){
+    if(esc_.length)B('Agradecimientos',en?'Acknowledgments':'Agradecimientos',[esc_.map(e=>en?`${tool(e,'en')} was used to ${purpose(e,'en')}.`:`Se utilizó ${tool(e,'es')} para ${purpose(e,'es')}.`).join(' ')+' '+(en?`All AI-assisted text was reviewed and revised by the author${uno?'':'s'} to ensure accuracy and clarity of meaning.`:`${uno?'Revisé y corregí':'Revisamos y corregimos'} todo el texto asistido por IA para asegurar su exactitud y claridad.`)]);
+    if(inv.length)B('Métodos',en?'Methods':'Métodos',[inv.map(e=>methodSentence(e,lang,uno,true)).join(' ')+' '+(en?`All AI-generated outputs were reviewed, tested, and verified by the author${uno?'':'s'}.`:`${uno?'Revisé, probé y verifiqué':'Revisamos, probamos y verificamos'} todos los resultados generados con IA.`),promptNote(inv,lang,en?'the Supporting Information':'la información de apoyo')]);
+    fig.forEach(e=>B('Pie de la figura',e.seccion.trim()||(en?'Figure':'Figura'),[figSentence(e,lang)]));
+  }
+
+  if(std==='scielo'){
+    if(L.length){
+      const t=en?`In accordance with the SciELO Network guide on the use of AI tools and resources (2023), ${uno?'I declare':'we declare'} the use of the following tools: ${L.map(e=>methodSentence(e,'en',uno)).join(' ')} ${verifSentence(L,'en',uno)} No AI tool is listed as an author; ${uno?'I take':'we take'} full responsibility for the content.`
+        :`Conforme a la Guía de uso de herramientas y recursos de Inteligencia Artificial de la Red SciELO (2023), ${uno?'declaro':'declaramos'} el uso de las siguientes herramientas. ${L.map(e=>methodSentence(e,'es',uno)).join(' ')} ${verifSentence(L,'es',uno)} Ninguna herramienta de IA figura como autora; ${uno?'asumo':'asumimos'} plena responsabilidad por el contenido.`;
+      B('Métodos o sección equivalente',en?'Methods':'Métodos',[t,promptNote(L,lang,en?'the Appendix':'el Apéndice')]);
+    }
+    fig.forEach(e=>B('Pie de la figura',e.seccion.trim()||(en?'Figure':'Figura'),[figSentence(e,lang)]));
+  }
+
+  // Revisión por pares (todos los estándares)
+  if(rev.length){
+    const t=rev.map(e=>en?`During the preparation of this review report, I used ${tool(e,'en')} to ${purpose(e,'en')}.`:`Durante la preparación de este informe de revisión utilicé ${tool(e,'es')} para ${purpose(e,'es')}.`).join(' ');
+    const noUp=rev.every(e=>e.datos!=='ajeno');
+    const extra=en?`${noUp?'I did not enter the manuscript or any part of it into the tool. ':''}I reviewed the output and take full responsibility for the content of the report.`:`${noUp?'No introduje el manuscrito ni partes de él en la herramienta. ':''}Revisé el resultado y asumo plena responsabilidad por el contenido del informe.`;
+    B('Informe de revisión (como revisor)',en?'Reviewer AI-use statement':'Declaración del revisor',[t+' '+extra],'Sigue además la política de la revista: ICMJE pide permiso previo y Elsevier solo admite herramientas privadas.');
+  }
+
+  // Apéndice de prompts
+  const withP=L.filter(e=>e.prompt.trim());
+  if(withP.length){
+    const paras=withP.map(e=>`${reg(e.n)} · ${fLong(e.fecha,lang)} · ${tool(e,lang)} — ${purpose(e,lang)}${(+e.iteraciones>1)?(en?` (${e.iteraciones} iterations)`:` (${e.iteraciones} iteraciones)`):''}${e.enlace.trim()?' · '+e.enlace.trim():''}\nPrompt: “${e.prompt.trim()}”`);
+    B('Apéndice o material suplementario',en?'Appendix: prompts used':'Apéndice: prompts utilizados',paras,'Conserva también las respuestas completas por si la revista las solicita.');
+  }
+  return{blocks,exempt,used,all};
+}
+
+function stdAlerts(std,used){
+  const out=[];
+  const S=(cls,t,src)=>out.push({cls,t,src});
+  if(std==='elsevier'){
+    if(used.some(e=>e.fase==='figuras'&&e.imagen==='resumen'))S('rojo','Elsevier no permite resúmenes gráficos hechos con herramientas genéricas de IA.','Elsevier, junio 2026');
+    if(used.some(e=>e.datos==='ajeno'))S('rojo','Elsevier prohíbe subir cualquier parte de un manuscrito en revisión a una herramienta de IA.','Elsevier, junio 2026');
+  }
+  if(std==='springer'&&used.some(e=>e.fase==='redaccion'&&/result|discus/i.test(e.seccion)&&e.contribucion!=='superficial'))S('ambar','Redactar Resultados o Discusión con IA es ámbar o rojo en Springer Nature según cuánto haya producido la herramienta.','Springer Nature');
+  if(std==='icmje')S('info','Pega también el párrafo de la carta de presentación al enviar.','ICMJE, enero 2026');
+  if(std==='wiley')S('info','Wiley pide declarar el uso de IA también en el formulario de envío.','Wiley, octubre 2025');
+  if(std==='apa')S('info','La IA integrada en Word o usada solo como buscador probablemente no requiere cita según APA.','Estilo APA, 2025');
+  if(std==='scielo')S('info','Cada revista de la red puede tener reglas propias: revisa sus instrucciones.','SciELO, 2023');
+  return out;
+}
+
+/* ---------- Render: formulario ---------- */
+let editingId=null;
+function buildForm(){
+  $('#fFase').innerHTML=Object.entries(FASES).map(([k,v])=>`<option value="${k}">${esc(v.lbl)}</option>`).join('');
+  $('#fContrib').innerHTML=Object.entries(CONTRIB).map(([k,v])=>`<label class="radio"><input type="radio" name="contrib" id="c-${k}" value="${k}"><span><b>${v.lbl}.</b> ${esc(v.d)}</span></label>`).join('');
+  $('#fDatos').innerHTML=Object.entries(DATOS).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');
+  $('#fCuenta').innerHTML=Object.entries(CUENTA).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');
+  $('#fImagen').innerHTML=Object.entries(IMAGEN).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');
+  $('#fVerif').innerHTML=Object.entries(VERIF).map(([k,v])=>`<label class="check"><input type="checkbox" id="v-${k}" data-v="${k}"> ${esc(v.lbl)}</label>`).join('');
+}
+function blankEntry(){return{fecha:today(),fase:'redaccion',herramienta:'',modelo:'',desarrollador:'',enlace:'',tituloChat:'',proposito:'',seccion:'',resultado:'editado',contribucion:'asistida',prompt:'',iteraciones:0,refsIA:false,datos:'ninguno',cuenta:'publica',imagen:'diagrama',verif:blankVerif()}}
+function fillForm(e){
+  $('#fFecha').value=e.fecha;$('#fFase').value=e.fase;$('#fHerr').value=e.herramienta;$('#fModelo').value=e.modelo;$('#fDev').value=e.desarrollador;
+  $('#fEnlace').value=e.enlace;$('#fTituloChat').value=e.tituloChat;$('#fProp').value=e.proposito;$('#fSeccion').value=e.seccion;$('#fResultado').value=e.resultado;
+  const r=document.getElementById('c-'+e.contribucion);if(r)r.checked=true;
+  $('#fPrompt').value=e.prompt;$('#fIter').value=e.iteraciones||'';$('#fRefsIA').checked=!!e.refsIA;$('#fDatos').value=e.datos;$('#fCuenta').value=e.cuenta;$('#fImagen').value=e.imagen;
+  Object.keys(VERIF).forEach(k=>{document.getElementById('v-'+k).checked=!!e.verif[k]});
+  syncForm();
+}
+function readForm(){
+  const v=blankVerif();Object.keys(VERIF).forEach(k=>v[k]=document.getElementById('v-'+k).checked);
+  const c=document.querySelector('input[name=contrib]:checked');
+  return{fecha:$('#fFecha').value||today(),fase:$('#fFase').value,herramienta:$('#fHerr').value.trim(),modelo:$('#fModelo').value.trim(),desarrollador:$('#fDev').value.trim(),enlace:$('#fEnlace').value.trim(),tituloChat:$('#fTituloChat').value.trim(),proposito:$('#fProp').value.trim(),seccion:$('#fSeccion').value.trim(),resultado:$('#fResultado').value,contribucion:c?c.value:'asistida',prompt:$('#fPrompt').value,iteraciones:Math.max(0,parseInt($('#fIter').value,10)||0),refsIA:$('#fRefsIA').checked,datos:$('#fDatos').value,cuenta:$('#fCuenta').value,imagen:$('#fImagen').value,verif:v};
+}
+function syncForm(){
+  $('#imgWrap').hidden=$('#fFase').value!=='figuras';
+  const r=risk(readForm());
+  const p=$('#riskPreview');p.className='preview '+r.nivel;
+  p.innerHTML=`<span class="pill ${r.nivel}">Riesgo ${NIVEL[r.nivel].toLowerCase()}</span>`+(r.motivos.length?`<ul>${r.motivos.map(m=>`<li>${esc(m)}</li>`).join('')}</ul>`:`<div style="margin-top:6px">Sin alertas con los datos capturados. Completa la verificación antes de guardar.</div>`);
+}
+function nextN(){return state.registros.reduce((m,e)=>Math.max(m,e.n||0),0)+1}
+function resetForm(){editingId=null;fillForm(blankEntry());$('#formTitle').textContent='Nuevo registro';$('#formReg').textContent=reg(nextN());$('#saveBtn').textContent='Guardar registro';$('#cancelEdit').hidden=true}
+
+/* ---------- Render: lista ---------- */
+let pendingDelete=null;
+function renderList(){
+  const list=state.registros.slice().sort((a,b)=>b.n-a.n);
+  $('#countAll').textContent=state.registros.length;
+  $('#demoBanner').hidden=!state.registros.some(e=>e.ejemplo);
+  const t={verde:0,ambar:0,rojo:0};list.forEach(e=>t[risk(e).nivel]++);
+  $('#tally').innerHTML=list.length?['rojo','ambar','verde'].filter(k=>t[k]).map(k=>`<span class="pill ${k}">${t[k]} ${NIVEL[k].toLowerCase()}</span>`).join(''):'';
+  if(!list.length){
+    $('#entries').innerHTML=`<div class="empty"><h3>Tu bitácora está vacía</h3><p style="margin:0">Registra el primer uso de IA con el formulario: fecha, herramienta, para qué la usaste y cómo verificaste el resultado. Cada registro alimenta la declaración.</p></div>`;return;
+  }
+  $('#entries').innerHTML=list.map(e=>{
+    const r=risk(e);const f=FASES[e.fase];
+    const vchips=Object.keys(VERIF).filter(k=>e.verif[k]).map(k=>`<span class="chip">✓ ${esc(VERIF[k].lbl)}</span>`).join('')||`<span class="chip miss">Sin verificación registrada</span>`;
+    const off=!e.incluir||e.resultado==='descartado';
+    return `<article class="entry ${r.nivel}${off?' off':''}" data-id="${e.id}">
+      <div class="entry-top"><span class="reg"><b>${reg(e.n)}</b> · ${fShort(e.fecha)}${e.ejemplo?'<span class="tag-ej">Ejemplo</span>':''}</span><span class="pill ${r.nivel}">${NIVEL[r.nivel]}</span></div>
+      <h3>${esc(e.herramienta||'Herramienta sin nombre')}${e.modelo&&e.modelo!==e.herramienta?` <small>${esc(e.modelo)}</small>`:''} <small>· ${esc(f.lbl)}</small></h3>
+      <p class="purpose">${esc(e.proposito||'Sin propósito registrado')}</p>
+      <div class="meta">${e.seccion?`<span>Sección: <b>${esc(e.seccion)}</b></span>`:''}<span>Contribución: <b>${CONTRIB[e.contribucion].lbl}</b></span><span>Datos: <b>${esc(DATOS[e.datos].split(':')[0].split(',')[0])}</b></span>${e.resultado==='descartado'?'<span><b>Resultado descartado</b></span>':''}</div>
+      <div class="chips">${vchips}${e.refsIA?`<span class="chip${e.verif.refs?'':' miss'}">Referencias sugeridas por IA</span>`:''}</div>
+      ${e.prompt.trim()?`<div class="prompt">${esc(e.prompt.trim())}</div>`:''}
+      ${r.motivos.length?`<ul class="reasons">${r.motivos.map(m=>`<li>${esc(m)}</li>`).join('')}</ul>`:''}
+      <div class="entry-actions">
+        <button class="btn small" data-act="edit">Editar</button>
+        <label class="check" style="font-size:13px"><input type="checkbox" data-act="incl" ${e.incluir?'checked':''} ${e.resultado==='descartado'?'disabled':''}> Incluir en la declaración</label>
+        ${pendingDelete===e.id?`<span class="confirm">¿Eliminar ${reg(e.n)}? <button class="btn small danger" data-act="del-yes">Eliminar</button><button class="btn small ghost" data-act="del-no">No</button></span>`:`<button class="btn small ghost danger" data-act="del">Eliminar</button>`}
+      </div>
+    </article>`;
+  }).join('');
+}
+
+/* ---------- Render: declaración ---------- */
+function renderDecl(){
+  const {std,lang}=state.ajustes;
+  $('#stdPicker').innerHTML=Object.entries(STD).map(([k,v])=>`<button class="seg" data-std="${k}" aria-pressed="${k===std}">${esc(v.lbl)}</button>`).join('');
+  document.querySelectorAll('#langPicker .seg').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
+  const S=STD[std];
+  $('#policyNote').innerHTML=`<b>${esc(S.name)}.</b> ${esc(S.sum)} <span style="display:block;margin-top:4px;font-size:12.5px">${esc(S.ver)} <a href="${S.url}" target="_blank" rel="noopener">Ver política oficial</a></span>`;
+  const g=generate();
+  const fmt=s=>esc(s).replace(/\u0001/g,'<i>').replace(/\u0002/g,'</i>').replace(/\n/g,'<br>');
+  if(!g.blocks.length){
+    $('#blocks').innerHTML=`<div class="empty"><h3>Nada que declarar todavía</h3><p style="margin:0">${g.used.length?'Con este estándar, tus registros incluidos quedan exentos de declaración.':'Agrega registros en la pestaña Registro o marca «Incluir en la declaración» en los que ya tienes.'}</p></div>`;
+  }else{
+    $('#blocks').innerHTML=g.blocks.map((b,i)=>`<section class="block"><div class="block-h"><div><div class="where">Dónde va: ${esc(b.where)}</div><div class="where-title">${esc(b.title)}</div></div><button class="btn small" data-copy="${i}">Copiar</button></div><div class="block-b${b.cls?' '+b.cls:''}" id="blk-${i}">${b.paras.map(p=>`<p>${fmt(p)}</p>`).join('')}</div>${b.note?`<div class="block-note">${esc(b.note)}</div>`:''}</section>`).join('');
+  }
+  window.__blocks=g.blocks;
+  // Alertas
+  const al=[];
+  state.registros.slice().sort((a,b)=>a.n-b.n).forEach(e=>{risk(e).rojo.forEach(m=>al.push({cls:'rojo',t:m,src:reg(e.n)}))});
+  stdAlerts(std,g.used).forEach(a=>al.unshift(a));
+  const amb=g.used.filter(e=>risk(e).nivel==='ambar').length;
+  if(amb)al.push({cls:'ambar',t:`${amb} registro${amb>1?'s':''} en precaución. Revisa las notas de cada uno en la pestaña Registro.`,src:''});
+  $('#alerts').innerHTML=al.length?al.map(a=>`<div class="alert ${a.cls}"><span class="dot"></span><div>${esc(a.t)}${a.src?`<small>${esc(a.src)}</small>`:''}</div></div>`).join(''):`<div class="alert info"><span class="dot"></span><div>Sin alertas para este estándar.</div></div>`;
+  // Checklist
+  const refsOk=!g.used.some(e=>e.refsIA&&!e.verif.refs);
+  const privOk=!state.registros.some(e=>(e.datos==='identificables'||e.datos==='ajeno')&&e.cuenta==='publica');
+  const imgOk=!state.registros.some(e=>e.fase==='figuras'&&(e.imagen==='primaria'||e.imagen==='fotorrealista'));
+  const verOk=!g.used.some(e=>!Object.values(e.verif).some(Boolean));
+  const auto=[[refsOk,'Referencias sugeridas por IA comprobadas'],[privOk,'Sin datos identificables ni manuscritos ajenos en cuentas personales'],[imgOk,'Sin imágenes primarias o fotorrealistas hechas con IA'],[verOk,'Cada uso incluido tiene verificación registrada']];
+  const man=[['autoria','Ninguna herramienta de IA aparece en la lista de autores'],['instrucciones','Leí las instrucciones para autores de la revista'],['conserva','Guardé prompts y respuestas completas'],['carta',std==='icmje'?'Incluí la declaración en la carta de presentación':'Declaré el uso en el formulario de envío, si la revista lo pide']];
+  $('#checklist').innerHTML=auto.map(([ok,t])=>`<div class="auto ${ok?'ok':'no'}"><i>${ok?'✓':'!'}</i><span>${esc(t)}</span></div>`).join('')+man.map(([k,t])=>`<label class="check"><input type="checkbox" id="ck-${k}" data-ck="${k}" ${state.checks[k]?'checked':''}> ${esc(t)}</label>`).join('');
+  // Exentos
+  $('#exemptCard').hidden=!g.exempt.length;
+  $('#exempt').innerHTML=g.exempt.map(e=>`<div><span class="reg"><b>${reg(e.n)}</b></span> ${esc(e.herramienta)} · ${esc(FASES[e.fase].lbl.toLowerCase())}</div>`).join('')+(g.exempt.length?`<p style="margin:8px 0 0">${esc(STD[std].lbl)} considera exento este uso superficial. Si dudas, declararlo no te perjudica.</p>`:'');
+}
+
+/* ---------- Guía ---------- */
+function renderGuide(){
+  const rows=[
+    ['APA 7','Journals: ago. 2025 · Estilo: sept. 2025','Introducción o Método; nota de autor para traducción o corrección extensa; nota de la figura','IA integrada en software común; IA usada como buscador','Introducir datos identificables en IA abierta; editores y revisores no pueden ingresar manuscritos'],
+    ['ICMJE','Enero 2026 (Sección V)','Carta de presentación y manuscrito: Agradecimientos (redacción) o Métodos (datos, análisis, figuras)','Ninguna explícita','Citar IA como fuente primaria; subir manuscritos sin confidencialidad; no declarar puede considerarse mala conducta'],
+    ['COPE','Febrero 2023 (vigente)','Materiales y Métodos o sección similar','No define','IA como autora'],
+    ['Elsevier','Junio 2026','Sección propia antes de las referencias; pies de figura; Métodos si es parte de la investigación','Gramática, ortografía y puntuación básicas; tecnología asistiva por discapacidad','Fabricar datos o referencias; crear o alterar imágenes primarias; resúmenes gráficos con IA genérica; revisores no suben ninguna parte del manuscrito'],
+    ['Springer Nature','2026 (marco de riesgo)','«AI Declaration» y leyendas de figura; Métodos si es investigación','Usos verdes permitidos; se recomienda describirlos','Fabricar datos o citas; imágenes fotorrealistas; visuales sin insumos verificables; delegar la revisión'],
+    ['Wiley','Octubre 2025','Agradecimientos, Métodos o pies de figura según el uso; también al enviar','Gramática simple, formato, elección de palabras; búsqueda básica y gestión de referencias','Crear o alterar datos y resultados; revisores no suben el manuscrito'],
+    ['Taylor & Francis','Vigente (lectura parcial)','Declaración con nombre completo, versión, uso y motivo','Algunas revistas solo admiten mejora del lenguaje','IA en resultados, muestras clínicas o imágenes diagnósticas'],
+    ['SciELO','Septiembre 2023','Métodos o equivalente; informes de revisión','No define','Ocultar el uso de IA en la revisión es falta ética']
+  ];
+  $('#policyTable').innerHTML=rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('');
+  const ph=[
+    ['Búsqueda de literatura','ambar','La búsqueda básica no se declara en Wiley ni en APA; el cribado o la síntesis que entra al manuscrito sí, en Métodos. Comprueba cada fuente.'],
+    ['Diseño del estudio','ambar','Sugerir enfoques es ámbar en Springer Nature; presentar hipótesis generadas por IA como propias es rojo.'],
+    ['Análisis de datos y código','rojo','Descríbelo en Métodos de forma reproducible. Nunca fabriques ni alteres datos ni ingreses datos identificables en IA abierta.'],
+    ['Redacción','ambar','Redactar a partir de tus insumos requiere declaración en todos los estándares; redactar Resultados o Discusión de forma autónoma es rojo en Springer Nature.'],
+    ['Traducción y edición de lenguaje','verde','La corrección básica está exenta en Elsevier y Wiley; la edición sustantiva o la traducción se declara.'],
+    ['Figuras e imágenes','rojo','Diagramas explicativos sí, con pie de figura. Imágenes primarias, fotorrealistas o resúmenes gráficos (Elsevier), no.'],
+    ['Revisión por pares','rojo','No subas el manuscrito. El apoyo para redactar el informe se declara y el juicio no se delega.']
+  ];
+  $('#phaseTable').innerHTML=ph.map(r=>`<tr><td>${esc(r[0])}</td><td><span class="pill ${r[1]}">${r[1]==='rojo'?'Muy alto':NIVEL[r[1]]}</span></td><td>${esc(r[2])}</td></tr>`).join('');
+  const src=[
+    ['APA Journals: política sobre IA generativa','https://www.apa.org/pubs/journals/resources/publishing-tips/policy-generative-ai'],
+    ['Estilo APA: formatos de referencia para IA generativa','https://apastyle.apa.org/blog/cite-generative-ai-references'],
+    ['Estilo APA: IA como buscador y en software común','https://apastyle.apa.org/blog/cite-generative-ai-search-software'],
+    ['ICMJE: uso de IA por autores','https://www.icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-authors.html'],
+    ['ICMJE: uso de IA por revisores','https://www.icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-reviewers.html'],
+    ['COPE: Authorship and AI tools','https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools'],
+    ['Elsevier: Generative AI policies for journals','https://www.elsevier.com/about/policies-and-standards/generative-ai-policies-for-journals'],
+    ['Springer Nature: IA en la preparación de manuscritos','https://www.springernature.com/gp/policies/editorial-policies/ai-manuscript-preparation'],
+    ['Nature: política editorial sobre IA','https://www.nature.com/nature/editorial-policies/ai'],
+    ['Wiley: AI guidelines','https://www.wiley.com/en-us/publish/article/ai-guidelines/'],
+    ['Taylor & Francis: AI policy','https://taylorandfrancis.com/our-policies/ai-policy/'],
+    ['WAME: Chatbots, Generative AI, and Scholarly Manuscripts','https://wame.org/page3.php?id=106'],
+    ['SciELO: Guía de uso de herramientas y recursos de IA','https://www.scielo.org/es/sobre-el-scielo/metodologias-y-tecnologias/guia-de-uso-de-herramientas-y-recursos-de-inteligencia-artificial-en-la-comunicacion-de-investigaciones-en-la-red-scielo/'],
+    ['Penabad-Camacho et al. (2024). Guía para uso y reporte de IA en revistas, Educare','https://doi.org/10.15359/ree.28-S.19830']
+  ];
+  $('#sources').innerHTML=src.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join('');
+}
+
+/* ---------- Pestañas ---------- */
+const TABS=['registro','declaracion','guia'];
+function showTab(t){
+  if(!TABS.includes(t))t='registro';
+  TABS.forEach(x=>{$('#p-'+x).hidden=x!==t;$('#t-'+x).setAttribute('aria-selected',String(x===t))});
+  if(t==='declaracion')renderDecl();
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{showTab(b.dataset.tab);try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){}}));
+
+/* ---------- Eventos ---------- */
+const form=$('#entryForm');
+form.addEventListener('input',syncForm);form.addEventListener('change',syncForm);
+form.addEventListener('submit',ev=>{
+  ev.preventDefault();
+  const d=readForm();
+  if(!d.herramienta){toast('Escribe el nombre de la herramienta');$('#fHerr').focus();return}
+  if(!d.proposito){toast('Escribe para qué usaste la herramienta');$('#fProp').focus();return}
+  if(editingId){const e=state.registros.find(x=>x.id===editingId);Object.assign(e,d);toast(reg(e.n)+' actualizado')}
+  else{const n=nextN();state.registros.push(Object.assign({id:'r'+Date.now().toString(36),n,incluir:d.resultado!=='descartado',ejemplo:false},d));toast(reg(n)+' guardado')}
+  save();renderList();resetForm();
+});
+$('#cancelEdit').addEventListener('click',resetForm);
+$('#entries').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-act]');if(!b)return;const id=b.closest('.entry').dataset.id;const e=state.registros.find(x=>x.id===id);if(!e)return;
+  const a=b.dataset.act;
+  if(a==='edit'){editingId=id;fillForm(e);$('#formTitle').textContent='Editar registro';$('#formReg').textContent=reg(e.n);$('#saveBtn').textContent='Guardar cambios';$('#cancelEdit').hidden=false;form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}
+  if(a==='del'){pendingDelete=id;renderList()}
+  if(a==='del-no'){pendingDelete=null;renderList()}
+  if(a==='del-yes'){state.registros=state.registros.filter(x=>x.id!==id);pendingDelete=null;if(editingId===id)resetForm();save();renderList();toast('Registro eliminado')}
+});
+$('#entries').addEventListener('change',ev=>{
+  const c=ev.target.closest('[data-act=incl]');if(!c)return;const e=state.registros.find(x=>x.id===c.closest('.entry').dataset.id);e.incluir=c.checked;save();renderList();
+});
+$('#clearDemo').addEventListener('click',()=>{state.registros=state.registros.filter(e=>!e.ejemplo);if(state.proyecto.titulo===sample().proyecto.titulo)state.proyecto.titulo='';save();syncProject();renderList();resetForm();toast('Ejemplos borrados. Tu bitácora está lista.')});
+function syncProject(){$('#pTitulo').value=state.proyecto.titulo;$('#pAutoria').value=state.proyecto.autoria;$('#pRevista').value=state.proyecto.revista;$('#pTipo').value=state.proyecto.tipo}
+[['pTitulo','titulo'],['pAutoria','autoria'],['pRevista','revista'],['pTipo','tipo']].forEach(([id,k])=>{document.getElementById(id).addEventListener('input',ev=>{state.proyecto[k]=ev.target.value;save()})});
+$('#stdPicker').addEventListener('click',ev=>{const b=ev.target.closest('[data-std]');if(!b)return;state.ajustes.std=b.dataset.std;save();renderDecl()});
+$('#langPicker').addEventListener('click',ev=>{const b=ev.target.closest('[data-lang]');if(!b)return;state.ajustes.lang=b.dataset.lang;save();renderDecl()});
+$('#checklist').addEventListener('change',ev=>{const c=ev.target.closest('[data-ck]');if(!c)return;state.checks[c.dataset.ck]=c.checked;save()});
+$('#blocks').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-copy]');if(!b)return;const blk=window.__blocks[+b.dataset.copy];
+  const text=blk.paras.join('\n\n').replace(/[\u0001\u0002]/g,'');
+  copyText(text,document.getElementById('blk-'+b.dataset.copy));
+});
+function copyText(text,el){
+  try{navigator.clipboard.writeText(text).then(()=>toast('Copiado'),()=>selectEl(el))}catch(e){selectEl(el)}
+}
+function selectEl(el){if(!el)return;const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Texto seleccionado: cópialo con Ctrl+C o ⌘C')}
+
+/* ---------- Exportar / importar ---------- */
+function mdExport(){
+  const p=state.proyecto;const rs=state.registros.slice().sort((a,b)=>a.n-b.n);
+  let s=`# Bitácora de uso de IA\n\n**Trabajo:** ${p.titulo||'—'}\n**Destino:** ${p.revista||'—'}\n**Exportada:** ${fLong(today(),'es')}\n\n`;
+  rs.forEach(e=>{const r=risk(e);
+    s+=`## ${reg(e.n)} · ${fLong(e.fecha,'es')}${e.ejemplo?' (ejemplo)':''}\n\n- **Herramienta:** ${tool(e,'es')}\n- **Fase:** ${FASES[e.fase].lbl}\n- **Propósito:** ${e.proposito||'—'}\n- **Sección:** ${e.seccion||'—'}\n- **Contribución:** ${CONTRIB[e.contribucion].lbl}\n- **Resultado:** ${e.resultado}\n- **Datos introducidos:** ${DATOS[e.datos]}\n- **Cuenta:** ${CUENTA[e.cuenta]}\n`;
+    if(e.fase==='figuras')s+=`- **Tipo de imagen:** ${IMAGEN[e.imagen]}\n`;
+    s+=`- **Verificación:** ${Object.keys(VERIF).filter(k=>e.verif[k]).map(k=>VERIF[k].lbl).join('; ')||'sin registrar'}\n- **Riesgo:** ${NIVEL[r.nivel]}${r.motivos.length?' — '+r.motivos.join(' '):''}\n`;
+    if(e.enlace)s+=`- **Enlace:** ${e.enlace}\n`;
+    if(e.prompt.trim())s+=`- **Prompt (${e.iteraciones||1} iteración${(e.iteraciones||1)>1?'es':''}):**\n\n> ${e.prompt.trim().replace(/\n/g,'\n> ')}\n`;
+    s+='\n';
+  });
+  return s;
+}
+async function offer(filename,data,title){
+  let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){dl=null}
+  if(dl){try{await dl.save({filename,data});toast('Archivo listo');return}catch(err){if(err&&err.code==='declined')return}}
+  $('#modalTitle').textContent=title;$('#modalText').value=data;$('#modal').hidden=false;$('#modalText').focus();
+}
+function slug(){return (state.proyecto.titulo||'bitacora-ia').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'bitacora-ia'}
+$('#exportMd').addEventListener('click',()=>offer(slug()+'-bitacora-ia.md',mdExport(),'Anexo de la bitácora'));
+$('#exportJson').addEventListener('click',()=>offer(slug()+'-respaldo.json',JSON.stringify(state,null,2),'Respaldo de la bitácora'));
+$('#modalClose').addEventListener('click',()=>{$('#modal').hidden=true});
+$('#modal').addEventListener('click',ev=>{if(ev.target.id==='modal')$('#modal').hidden=true});
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')$('#modal').hidden=true});
+$('#modalCopy').addEventListener('click',()=>{const t=$('#modalText');try{navigator.clipboard.writeText(t.value).then(()=>toast('Copiado'),()=>{t.select();toast('Texto seleccionado: cópialo con Ctrl+C o ⌘C')})}catch(e){t.select()}});
+$('#importFile').addEventListener('change',ev=>{
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;
+  const rd=new FileReader();rd.onload=()=>{try{const s=JSON.parse(rd.result);if(!s||!Array.isArray(s.registros))throw 0;state=normalize(s);save();syncProject();renderList();resetForm();toast(`Respaldo importado: ${state.registros.length} registros`)}catch(e){toast('Ese archivo no es un respaldo de la bitácora')}};rd.readAsText(f);ev.target.value='';
+});
+
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},2600)}
+
+/* ---------- Inicio ---------- */
+buildForm();syncProject();renderList();resetForm();renderGuide();
+showTab((location.hash||'').slice(1));
+})();
+</script>
+
+</body></html>
